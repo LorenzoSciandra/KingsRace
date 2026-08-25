@@ -1,4 +1,4 @@
-# 🂠 The Kings' Race
+# The Kings' Race
 
 A card-based horse race, played entirely with a deck of Bicycle-style playing cards on an 8×5 board. Four Kings — one per suit — race from the bottom row to the top, pushed forward by Aces and knocked back by Jokers. Built as a single-page, dependency-free web app with a dark casino-table look, smooth animations, and a live race log.
 
@@ -26,26 +26,6 @@ From the victory screen you can start a **New Race** (same mode and setup) or **
 - A deck pile that visibly thins out and a discard pile that grows as the game progresses.
 - Bicycle-style playing cards throughout — face cards use custom King/Queen/Jack/Joker artwork.
 
-## Running it
-
-No build step, no dependencies. Just serve the folder and open it in a browser:
-
-```bash
-python3 -m http.server 8000
-```
-
-then visit `http://localhost:8000`. (Opening `index.html` directly also works, though a local server avoids any browser file:// restrictions.)
-
-## Project structure
-
-```text
-index.html   – markup for all screens (mode select, king/name setup, race, victory, rules)
-style.css    – dark casino-table theme, card components, layout, animations
-game.js      – game state, board rendering, race loop, both game modes
-assets/
-  fonts/     – "Card Characters" by Harold Lohner (haroldsfonts.com), used for ranks and pips
-  images/    – King, Queen, Jack and Joker artwork (red/black)
-```
 
 ## License
 
