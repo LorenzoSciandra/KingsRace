@@ -1,0 +1,19 @@
+{
+  "name": "The Kings' Race",
+  "short_name": "Kings' Race",
+  "description": "A card-based horse race game for the browser.",
+  "id": "./",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#06241a",
+  "theme_color": "#0e3d2b",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "assets/images/black_king.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
