@@ -1,6 +1,6 @@
 # The Kings' Race
 
-A card-based horse race, played entirely with a deck of Bicycle-style playing cards on an 8×5 board. Four Kings — one per suit — race from the bottom row to the top, pushed forward by Aces and knocked back by Jokers. Built as a single-page, dependency-free web app with a dark casino-table look, smooth animations, and a live race log.
+A card-based horse race game, played entirely with a deck of playing cards on an 8×5 board. Four Kings — one per suit — race from the bottom row to the top, pushed forward by Aces and knocked back by Jokers. 
 
 ## How it works
 
