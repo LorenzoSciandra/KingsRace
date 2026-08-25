@@ -20,9 +20,13 @@ const shuffle = arr => {
 };
 
 // ---------- DOM references ----------
+const screenMode = document.getElementById('screen-mode');
 const screenSelect = document.getElementById('screen-select');
 const screenRace = document.getElementById('screen-race');
 const screenVictory = document.getElementById('screen-victory');
+const selectSubtitleEl = document.getElementById('select-subtitle');
+const startFriendsBtn = document.getElementById('start-friends-btn');
+const setupWarningEl = document.getElementById('setup-warning');
 const cellsLayer = document.getElementById('cells');
 const tokensLayer = document.getElementById('tokens');
 const timelineEl = document.getElementById('timeline');
@@ -50,9 +54,11 @@ function pauseGame(showOverlay = true) {
   const ov = document.createElement('div');
   ov.className = 'paused-overlay';
   ov.id = 'paused-overlay';
-  ov.innerHTML = `<div class="paused-box"><span class="paused-title">Paused</span><button class="pause-btn" id="resume-btn">Resume</button></div>`;
+  ov.innerHTML = `<div class="paused-box"><span class="paused-title">Paused</span>` +
+    `<div class="btn-row"><button id="resume-btn">Resume</button><button id="pause-change-mode-btn" class="btn-ghost">Change Mode</button></div></div>`;
   screenRace.appendChild(ov);
   document.getElementById('resume-btn').addEventListener('click', resumeGame);
+  document.getElementById('pause-change-mode-btn').addEventListener('click', () => location.reload());
 }
 function resumeGame() {
   if (!paused) return;
@@ -64,7 +70,7 @@ pauseBtn.addEventListener('click', pauseGame);
 
 // ---------- Game state ----------
 let mainDeck, bonusRow, kingPos, revealed, deckIdx;
-let playerSuit, computerSuit, gameOver;
+let mode, playerSuit, computerSuit, riderNames = {}, gameOver;
 let kingEls = {}, bonusEls = {};
 
 function newGame() {
@@ -95,9 +101,11 @@ function cardInnerHTML(rank, sym, color) {
     `<div class="${centerClass}">${figure}<span class="big-pip">${sym}</span></div>` +
     `<span class="pc-corner br">${rank}<br>${sym}</span>`;
 }
+const STAR_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
 function jokerInnerHTML(color) {
-  const label = color === 'red' ? 'RED JOKER' : 'BLACK JOKER';
-  return `<div class="pc-center"><img class="figure-img joker-img" src="assets/images/${color}_joker.png" alt=""><span class="joker-label ${color}">${label}</span></div>`;
+  return `<span class="pc-corner tl joker-star">${STAR_SVG}</span>` +
+    `<div class="pc-center"><img class="figure-img joker-img" src="assets/images/${color}_joker.png" alt=""></div>` +
+    `<span class="pc-corner br joker-star">${STAR_SVG}</span>`;
 }
 
 // ---------- Board construction ----------
@@ -129,8 +137,12 @@ function renderTokens() {
   SUITS.forEach((suit, i) => {
     const el = document.createElement('div');
     el.className = `token king pc-front ${SUIT_COLOR[suit]} enter`;
-    if (suit === playerSuit) el.classList.add('player');
-    if (suit === computerSuit) el.classList.add('computer');
+    if (mode === 'computer') {
+      if (suit === playerSuit) el.classList.add('player');
+      if (suit === computerSuit) el.classList.add('computer');
+    } else if (riderNames[suit]) {
+      el.classList.add('player');
+    }
     el.innerHTML = cardInnerHTML('K', SUIT_GLYPH[suit], SUIT_COLOR[suit]);
     positionToken(el, kingPos[suit], SUIT_COL[suit]);
     el.style.animationDelay = (i * 120) + 'ms';
@@ -261,15 +273,26 @@ async function win(suit) {
 
 function showVictory(suit) {
   victoryWinnerEl.innerHTML = `<div class="pc-front ${SUIT_COLOR[suit]}">${cardInnerHTML('K', SUIT_GLYPH[suit], SUIT_COLOR[suit])}</div>`;
-  if (suit === playerSuit) {
-    victoryTitleEl.textContent = 'You Win!';
-    victorySubtitleEl.textContent = `Your ${SUIT_NAME[suit]} King crossed the finish line first.`;
-  } else if (suit === computerSuit) {
-    victoryTitleEl.textContent = 'Computer Wins';
-    victorySubtitleEl.textContent = `The computer's ${SUIT_NAME[suit]} King beat you to the finish line.`;
+  if (mode === 'computer') {
+    if (suit === playerSuit) {
+      victoryTitleEl.textContent = 'You Win!';
+      victorySubtitleEl.textContent = `Your ${SUIT_NAME[suit]} King crossed the finish line first.`;
+    } else if (suit === computerSuit) {
+      victoryTitleEl.textContent = 'Computer Wins';
+      victorySubtitleEl.textContent = `The computer's ${SUIT_NAME[suit]} King beat you to the finish line.`;
+    } else {
+      victoryTitleEl.textContent = 'Surprise Winner!';
+      victorySubtitleEl.textContent = `The ${SUIT_NAME[suit]} King, chosen by neither racer, won the race!`;
+    }
   } else {
-    victoryTitleEl.textContent = 'Surprise Winner!';
-    victorySubtitleEl.textContent = `The ${SUIT_NAME[suit]} King, chosen by neither racer, won the race!`;
+    const name = riderNames[suit];
+    if (name) {
+      victoryTitleEl.textContent = `${name} Wins!`;
+      victorySubtitleEl.textContent = `${name}'s ${SUIT_NAME[suit]} King crossed the finish line first.`;
+    } else {
+      victoryTitleEl.textContent = `${SUIT_NAME[suit]} King Wins!`;
+      victorySubtitleEl.textContent = `No rider claimed this King, but it still won the race!`;
+    }
   }
   screenVictory.classList.remove('hidden');
 }
@@ -287,8 +310,12 @@ async function countdown() {
 }
 
 function setRiderLabels() {
-  document.getElementById('you-label').style.left = (SUIT_COL[playerSuit] * COLW) + '%';
-  document.getElementById('pc-label').style.left = (SUIT_COL[computerSuit] * COLW) + '%';
+  SUITS.forEach(suit => {
+    const label = mode === 'computer'
+      ? (suit === playerSuit ? 'YOU' : suit === computerSuit ? 'PC' : '')
+      : (riderNames[suit] || '');
+    document.getElementById('label-' + suit).textContent = label;
+  });
 }
 
 async function startRace() {
@@ -318,14 +345,86 @@ function chooseKing(suit) {
   startRace();
 }
 
+function chooseMode(m) {
+  mode = m;
+  screenMode.classList.add('hidden');
+  screenSelect.classList.remove('hidden');
+  const nameInputs = document.querySelectorAll('.name-input');
+  setupWarningEl.classList.add('hidden');
+  if (m === 'computer') {
+    selectSubtitleEl.textContent = 'Choose your King. The computer will pick another.';
+    nameInputs.forEach(i => { i.classList.add('hidden'); i.value = ''; });
+    startFriendsBtn.classList.add('hidden');
+  } else {
+    selectSubtitleEl.textContent = 'Give up to 4 riders a name, then start the race.';
+    nameInputs.forEach(i => i.classList.remove('hidden'));
+    startFriendsBtn.classList.remove('hidden');
+  }
+}
+
+function backToMode() {
+  screenSelect.classList.add('hidden');
+  screenMode.classList.remove('hidden');
+}
+
+function startFriendsRace() {
+  const names = {};
+  const seen = new Set();
+  let dupe = false;
+  SUITS.forEach(suit => {
+    const val = document.querySelector(`.pick-card[data-suit="${suit}"] .name-input`).value.trim();
+    if (!val) return;
+    const key = val.toLowerCase();
+    if (seen.has(key)) dupe = true;
+    seen.add(key);
+    names[suit] = val;
+  });
+  if (!Object.keys(names).length) {
+    setupWarningEl.textContent = 'Enter at least one name to start.';
+    setupWarningEl.classList.remove('hidden');
+    return;
+  }
+  if (dupe) {
+    setupWarningEl.textContent = 'Names must be different.';
+    setupWarningEl.classList.remove('hidden');
+    return;
+  }
+  riderNames = names;
+  newGame();
+  startRace();
+}
+
 // ---------- Events ----------
-document.querySelectorAll('.pick-card').forEach(btn => {
-  const suit = btn.dataset.suit;
-  const color = btn.classList.contains('red') ? 'red' : 'black';
-  btn.innerHTML = `<div class="card-face pc-front ${color}">${cardInnerHTML('K', SUIT_GLYPH[suit], color)}</div>`;
-  btn.addEventListener('click', () => chooseKing(suit));
+document.querySelectorAll('.name-input').forEach(input => {
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase();
+  });
 });
-document.getElementById('replay-btn').addEventListener('click', () => location.reload());
+document.querySelectorAll('.pick-card').forEach(card => {
+  const suit = card.dataset.suit;
+  const color = card.classList.contains('red') ? 'red' : 'black';
+  const face = card.querySelector('.card-face');
+  face.classList.add('pc-front', color);
+  face.innerHTML = cardInnerHTML('K', SUIT_GLYPH[suit], color);
+});
+document.querySelector('.king-picker').addEventListener('click', e => {
+  if (mode !== 'computer') return;
+  const card = e.target.closest('.pick-card');
+  if (card) chooseKing(card.dataset.suit);
+});
+document.querySelectorAll('.mode-card').forEach(btn => {
+  btn.addEventListener('click', () => chooseMode(btn.dataset.mode));
+});
+startFriendsBtn.addEventListener('click', startFriendsRace);
+document.getElementById('back-to-mode-btn').addEventListener('click', backToMode);
+document.querySelector('.mini-title').addEventListener('click', () => location.reload());
+
+document.getElementById('replay-btn').addEventListener('click', () => {
+  screenVictory.classList.add('hidden');
+  newGame();
+  startRace();
+});
+document.getElementById('change-mode-btn').addEventListener('click', () => location.reload());
 
 const rulesBtn = document.getElementById('rules-btn');
 const rulesPanel = document.getElementById('rules-panel');

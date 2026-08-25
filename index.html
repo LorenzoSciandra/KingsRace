@@ -14,15 +14,50 @@
 
 <div class="table-bg"></div>
 
-<!-- KING SELECTION -->
-<section id="screen-select">
+<!-- MODE SELECTION -->
+<section id="screen-mode">
   <h1>The Kings' Race</h1>
-  <p class="subtitle">Choose your King. The computer will pick another. Aces push a King forward, Jokers send same-colored Kings back — first to the finish line wins.</p>
+  <p class="subtitle">Four Kings, four steeds, one crown at stake. Choose the champion you'll ride with to the finish line.</p>
+  <div class="mode-picker">
+    <button class="mode-card" data-mode="computer">
+      <img class="mode-icon" src="assets/images/pc.png" alt="">
+      <span class="mode-title">Vs Computer</span>
+      <span class="mode-desc">Pick a King. The computer picks another.</span>
+    </button>
+    <button class="mode-card" data-mode="friends">
+      <img class="mode-icon" src="assets/images/group.png" alt="">
+      <span class="mode-title">Play with Friends</span>
+      <span class="mode-desc">Name up to 4 riders, one per suit.</span>
+    </button>
+  </div>
+</section>
+
+<!-- KING SELECTION -->
+<section id="screen-select" class="hidden">
+  <h1>The Kings' Race</h1>
+  <p class="subtitle" id="select-subtitle">Choose your King.</p>
   <div class="king-picker">
-    <button class="pick-card black" data-suit="S"></button>
-    <button class="pick-card red"   data-suit="D"></button>
-    <button class="pick-card black" data-suit="C"></button>
-    <button class="pick-card red"   data-suit="H"></button>
+    <div class="pick-card black" data-suit="S">
+      <div class="card-face"></div>
+      <input class="name-input hidden" type="text" maxlength="3" placeholder="TAG">
+    </div>
+    <div class="pick-card red" data-suit="D">
+      <div class="card-face"></div>
+      <input class="name-input hidden" type="text" maxlength="3" placeholder="TAG">
+    </div>
+    <div class="pick-card black" data-suit="C">
+      <div class="card-face"></div>
+      <input class="name-input hidden" type="text" maxlength="3" placeholder="TAG">
+    </div>
+    <div class="pick-card red" data-suit="H">
+      <div class="card-face"></div>
+      <input class="name-input hidden" type="text" maxlength="3" placeholder="TAG">
+    </div>
+  </div>
+  <p class="setup-warning hidden" id="setup-warning"></p>
+  <div class="btn-row">
+    <button id="start-friends-btn" class="pause-btn hidden">Start Race</button>
+    <button id="back-to-mode-btn" class="pause-btn btn-ghost">Back</button>
   </div>
 </section>
 
@@ -61,8 +96,10 @@
       <div id="board">
         <span class="rail rail-top">FINISH</span>
         <span class="rail rail-bottom">START</span>
-        <span class="rider-label" id="you-label">YOU</span>
-        <span class="rider-label" id="pc-label">PC</span>
+        <span class="rider-label" id="label-S"></span>
+        <span class="rider-label" id="label-D"></span>
+        <span class="rider-label" id="label-C"></span>
+        <span class="rider-label" id="label-H"></span>
         <div id="cells"></div>
         <div id="tokens"></div>
       </div>
@@ -78,7 +115,10 @@
     <div id="victory-winner" class="victory-winner"></div>
     <h2 id="victory-title"></h2>
     <p id="victory-subtitle"></p>
-    <button id="replay-btn">New Race</button>
+    <div class="btn-row">
+      <button id="replay-btn">New Race</button>
+      <button id="change-mode-btn" class="btn-ghost">Change Mode</button>
+    </div>
   </div>
 </div>
 
@@ -88,7 +128,7 @@
   <div class="rules-card">
     <h2>How to Play</h2>
     <ul>
-      <li>Pick a King — the computer picks another.</li>
+      <li>Play vs Computer, or name up to 4 friends — one King each.</li>
       <li>Cards are drawn one by one from the deck.</li>
       <li>A card's suit moves that King up one row.</li>
       <li>Kings only move within their own column.</li>

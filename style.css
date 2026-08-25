@@ -65,17 +65,34 @@ h1{
 .hidden{display:none !important;}
 
 /* ---------- SELECTION ---------- */
-#screen-select{
+#screen-mode, #screen-select{
   display:flex; flex-direction:column; align-items:center;
   max-width:640px; padding:0 20px; animation:fadeIn .8s ease both;
 }
-#screen-select h1{ text-align:center; font-size:2.2rem; }
+#screen-mode h1, #screen-select h1{ text-align:center; font-size:2.2rem; }
 .subtitle{
   text-align:center; font-size:1.05rem; opacity:.8; margin:1em 0 2em; line-height:1.5;
 }
+
+.mode-picker{ display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+.mode-card{
+  width:220px; padding:1.6em 1.4em; border-radius:16px; cursor:pointer;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.05), transparent 60%),
+    linear-gradient(160deg, var(--felt-1), var(--felt-2));
+  border:2px solid rgba(212,175,106,.5); box-shadow:0 10px 25px rgba(0,0,0,.5), inset 0 0 30px rgba(0,0,0,.4);
+  display:flex; flex-direction:column; align-items:center; gap:.6em; text-align:center;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.mode-card:hover{ transform:translateY(-8px) scale(1.03); box-shadow:0 18px 34px rgba(212,175,106,.35); }
+.mode-icon{ width:46px; height:46px; filter:invert(1); opacity:.9; }
+.mode-title{ font-family:'Card Characters','Cinzel',serif; font-size:1.15rem; font-weight:700; color:var(--gold-bright); }
+.mode-desc{ font-size:.85rem; color:var(--ink); opacity:.75; line-height:1.4; }
+
 .king-picker{ display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
 .pick-card{
   border:none; background:none; padding:0; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
   transition:transform .25s ease;
 }
 .pick-card .card-face{
@@ -84,6 +101,16 @@ h1{
 }
 .pick-card:hover{ transform:translateY(-8px) scale(1.04); }
 .pick-card:hover .card-face{ box-shadow:0 18px 34px rgba(212,175,106,.35); }
+.name-input{
+  width:64px; padding:.4em .3em; text-align:center;
+  border-radius:8px; border:1px solid rgba(212,175,106,.4);
+  background:rgba(255,255,255,.06); color:var(--ink); font-size:.95rem;
+  font-family:'Card Characters','Cinzel',serif; letter-spacing:.1em; text-transform:uppercase;
+}
+.name-input::placeholder{ color:var(--muted); }
+.name-input:focus{ outline:none; border-color:var(--gold-bright); }
+.setup-warning{ color:#ff8b7a; font-size:.9rem; margin:.4em 0 0; }
+#screen-select .btn-row{ margin-top:2.4em; }
 
 /* ---------- RACE SCREEN (single-page layout) ---------- */
 #screen-race{
@@ -95,7 +122,12 @@ h1{
 .race-header{
   display:flex; align-items:center; justify-content:space-between; flex:0 0 auto;
 }
-.mini-title{ font-size:1.3rem; white-space:nowrap; }
+.mini-title{
+  font-size:1.55rem; white-space:nowrap; cursor:pointer;
+  transition:transform .15s ease, opacity .15s ease;
+}
+.mini-title:hover{ opacity:.8; }
+.mini-title:active{ transform:scale(.94); }
 
 .pause-btn{
   font-weight:600; font-size:.85rem; letter-spacing:.03em;
@@ -224,20 +256,19 @@ h1{
 .pc-center .big-pip{ font-size:1.8rem; }
 .pc-center.has-figure .big-pip{ font-size:.85rem; margin-top:-2px; }
 .pc-center .figure-img{ width:56%; height:auto; display:block; filter:drop-shadow(0 1px 2px rgba(0,0,0,.3)); }
-.pc-center .joker-img{ width:48%; }
-.pc-center .joker-label{
-  font-family:'Card Characters','Cinzel',serif; font-weight:700; font-size:.52rem; letter-spacing:.1em;
-  margin-top:3px; padding:1px 6px; border-radius:6px;
+.pc-center .joker-img{ width:58%; }
+.joker-star{
+  width:1.6em; height:1.6em; border-radius:50%;
+  border:1.5px solid currentColor;
+  display:flex; align-items:center; justify-content:center;
 }
-.pc-center .joker-label.red{ color:#fff; background:var(--red); }
-.pc-center .joker-label.black{ color:#fff; background:var(--black); }
+.joker-star svg{ width:60%; height:60%; }
 .pc-front.red .pc-corner, .pc-front.red .big-pip{ color:var(--red); }
 .pc-front.black .pc-corner, .pc-front.black .big-pip{ color:var(--black); }
 
 /* current-card face sizing */
 .flip-container .pc-center .big-pip{ font-size:2.4rem; }
 .flip-container .pc-corner{ font-size:1rem; }
-.flip-container .joker-label{ font-size:.65rem; }
 
 /* ---------- BOARD ---------- */
 .board-wrap{
@@ -269,9 +300,14 @@ h1{
 
 .rider-label{
   position:absolute; top:100%; margin-top:12px; width:20%; text-align:center;
-  font-family:'Card Characters','Cinzel',serif; font-size:.85rem; font-weight:700; letter-spacing:.15em;
-  color:var(--gold-bright); opacity:.9; pointer-events:none; transition:left .65s cubic-bezier(.34,1.3,.4,1);
+  font-family:'Card Characters','Cinzel',serif; font-size:.85rem; font-weight:700; letter-spacing:.1em;
+  color:var(--gold-bright); opacity:.9; pointer-events:none;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
+#label-S{ left:0%; }
+#label-D{ left:20%; }
+#label-C{ left:40%; }
+#label-H{ left:60%; }
 
 #cells{
   position:absolute; inset:8px;
@@ -306,7 +342,6 @@ h1{
 .token.bonus-card{ perspective:600px; }
 .token.bonus-card .pc-corner{ font-size:.55rem; }
 .token.bonus-card .big-pip{ font-size:1.05rem; }
-.token.bonus-card .joker-label{ font-size:.38rem; padding:1px 4px; letter-spacing:.03em; }
 
 /* entrance dealt-from-left animation */
 .token.enter{ animation:dealIn .5s cubic-bezier(.2,1.4,.4,1) both; }
@@ -377,13 +412,20 @@ h1{
 .pick-card .big-pip{ font-size:1rem; }
 #victory-title{ font-family:'Card Characters','Cinzel',serif; color:var(--gold-bright); margin:.3em 0 .2em; font-size:1.9rem; }
 #victory-subtitle{ opacity:.85; font-size:1rem; max-width:340px; }
-#replay-btn{
-  margin-top:1.4em; padding:.7em 1.8em; font-size:.95rem; font-weight:600;
-  letter-spacing:.03em; color:var(--felt-2); background:linear-gradient(160deg,var(--gold-bright),var(--gold));
-  border:none; border-radius:24px; cursor:pointer; box-shadow:0 8px 20px rgba(212,175,106,.4);
+.btn-row{ display:flex; justify-content:center; align-items:center; gap:14px; margin-top:1.4em; }
+.btn-row button{
+  min-width:150px; padding:.7em 1.2em; font-size:.95rem; font-weight:600;
+  letter-spacing:.03em; border-radius:24px; cursor:pointer; text-align:center;
   transition:transform .2s ease;
 }
-#replay-btn:hover{ transform:translateY(-3px); }
+#replay-btn, #resume-btn{
+  color:var(--felt-2); background:linear-gradient(160deg,var(--gold-bright),var(--gold));
+  border:none; box-shadow:0 8px 20px rgba(212,175,106,.4);
+}
+.btn-ghost{
+  color:var(--gold-bright); background:none; border:1px solid rgba(212,175,106,.5); box-shadow:none;
+}
+.btn-row button:hover{ transform:translateY(-3px); }
 
 @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
 
