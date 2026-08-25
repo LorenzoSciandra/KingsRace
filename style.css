@@ -69,22 +69,24 @@ h1{
 }
 .king-picker{ display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
 .pick-card{
-  width:110px; height:154px; border-radius:12px; border:1px solid var(--card-line);
-  background:linear-gradient(160deg,var(--card-bg),#eee9db);
-  cursor:pointer; position:relative; font-family:'Cinzel',serif;
-  box-shadow:0 10px 25px rgba(0,0,0,.45);
-  transition:transform .25s ease, box-shadow .25s ease;
-  display:flex; align-items:center; justify-content:center;
+  border:none; background:none; padding:0; cursor:pointer;
+  font-family:'Cinzel',serif;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  transition:transform .25s ease;
 }
-.pick-card:hover{ transform:translateY(-10px) scale(1.05); box-shadow:0 18px 34px rgba(212,175,106,.35); }
-.pick-card .corner{ position:absolute; top:8px; left:10px; font-weight:700; font-size:1.1rem; }
-.pick-card .pip{ font-size:2.6rem; }
-.pick-card .name{ position:absolute; bottom:8px; font-family:'Poppins',sans-serif; font-size:.8rem; letter-spacing:.04em; opacity:.7; }
-.pick-card.red{ color:var(--red); }
-.pick-card.black{ color:var(--black); }
+.pick-card .card-face{
+  width:110px; height:154px; border-radius:12px;
+  transition:box-shadow .25s ease;
+}
+.pick-card:hover{ transform:translateY(-8px) scale(1.04); }
+.pick-card:hover .card-face{ box-shadow:0 18px 34px rgba(212,175,106,.35); }
+.pick-card .name{ font-family:'Poppins',sans-serif; font-size:.85rem; letter-spacing:.04em; opacity:.8; }
+.pick-card.red .name{ color:var(--red); }
+.pick-card.black .name{ color:var(--black); }
 
 /* ---------- RACE SCREEN (single-page layout) ---------- */
 #screen-race{
+  position:relative;
   width:100vw; height:100vh; padding:14px 22px;
   display:flex; flex-direction:column; gap:8px;
   animation:fadeIn .6s ease both;
@@ -113,10 +115,11 @@ h1{
   display:flex; align-items:stretch; justify-content:center; gap:20px;
 }
 
-/* ---------- timeline (left of deck) ---------- */
+/* ---------- timeline (pinned to the left, below the title) ---------- */
 .timeline-panel{
-  flex:0 0 auto; width:230px; height:100%;
-  display:flex; flex-direction:column; gap:10px;
+  position:absolute; left:22px; top:74px; bottom:34px;
+  width:340px; height:230px; margin:auto 0;
+  display:flex; flex-direction:column; gap:8px;
 }
 .timeline-title{
   font-family:'Cinzel',serif; font-size:.85rem; letter-spacing:.15em; text-transform:uppercase;
@@ -125,14 +128,16 @@ h1{
 .timeline{
   list-style:none; margin:0; padding:6px 10px 6px 0;
   flex:1 1 auto; min-height:0; overflow-y:auto;
-  display:flex; flex-direction:column; gap:7px;
+  display:flex; flex-direction:column; justify-content:flex-end; gap:7px;
   mask-image:linear-gradient(to bottom, transparent 0, black 24px);
 }
 .timeline::-webkit-scrollbar{ width:5px; }
 .timeline::-webkit-scrollbar-thumb{ background:rgba(212,175,106,.3); border-radius:3px; }
 .tl-entry{
+  flex:0 0 auto;
   font-size:.82rem; line-height:1.4; color:var(--ink);
   padding:7px 10px; border-radius:8px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   background:rgba(255,255,255,.04); border-left:2px solid var(--gold);
   animation:tlIn .35s ease both;
 }
@@ -146,7 +151,7 @@ h1{
   flex:0 0 auto; width:150px;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
 }
-.pile{ display:flex; flex-direction:column; align-items:center; gap:5px; }
+.pile{ display:flex; flex-direction:column; align-items:center; gap:10px; }
 .pile-label{
   font-family:'Cinzel',serif; font-size:.6rem; letter-spacing:.18em; text-transform:uppercase;
   color:var(--gold); opacity:.65;
@@ -221,14 +226,20 @@ h1{
 .pc-center .big-pip{ font-size:1.8rem; }
 .pc-center.has-figure .big-pip{ font-size:.85rem; margin-top:-2px; }
 .pc-center .figure-glyph{ font-size:2.1rem; line-height:1; }
-.pc-center .joker-label{ font-family:'Cinzel',serif; font-size:.5rem; letter-spacing:.15em; opacity:.8; margin-top:1px; }
+.pc-center .joker-label{
+  font-family:'Cinzel',serif; font-weight:700; font-size:.52rem; letter-spacing:.1em;
+  margin-top:3px; padding:1px 6px; border-radius:6px;
+}
+.pc-center .joker-label.red{ color:#fff; background:var(--red); }
+.pc-center .joker-label.black{ color:#fff; background:var(--black); }
 .joker-badge{
   width:62%; aspect-ratio:1; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 8px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.5);
 }
-.joker-badge.red{ background:radial-gradient(circle, rgba(192,57,43,.16), transparent 72%); }
-.joker-badge.black{ background:radial-gradient(circle, rgba(26,26,26,.14), transparent 72%); }
-.joker-badge .figure-glyph{ font-size:1.9rem; }
+.joker-badge.red{ background:linear-gradient(160deg,#e0574a,var(--red)); }
+.joker-badge.black{ background:linear-gradient(160deg,#4a4a4a,var(--black)); }
+.joker-badge .figure-glyph{ font-size:1.9rem; filter:drop-shadow(0 1px 1px rgba(0,0,0,.4)); }
 .pc-front.red .pc-corner, .pc-front.red .big-pip, .pc-front.red .figure-glyph{ color:var(--red); }
 .pc-front.black .pc-corner, .pc-front.black .big-pip, .pc-front.black .figure-glyph{ color:var(--black); }
 
@@ -303,7 +314,7 @@ h1{
 .token.bonus-card .big-pip{ font-size:1.05rem; }
 .token.bonus-card .figure-glyph{ font-size:1.3rem; }
 .token.bonus-card .joker-badge{ width:58%; }
-.token.bonus-card .joker-label{ font-size:.4rem; }
+.token.bonus-card .joker-label{ font-size:.38rem; padding:1px 4px; letter-spacing:.03em; }
 
 /* entrance dealt-from-left animation */
 .token.enter{ animation:dealIn .5s cubic-bezier(.2,1.4,.4,1) both; }
@@ -369,6 +380,9 @@ h1{
 .victory-winner .pc-front{ width:100%; height:100%; }
 .victory-winner .big-pip{ font-size:1rem; }
 .victory-winner .figure-glyph{ font-size:3.4rem; }
+
+.pick-card .big-pip{ font-size:1rem; }
+.pick-card .figure-glyph{ font-size:2.7rem; }
 #victory-title{ font-family:'Cinzel',serif; color:var(--gold-bright); margin:.3em 0 .2em; font-size:1.9rem; }
 #victory-subtitle{ opacity:.85; font-size:1rem; max-width:340px; font-family:'Poppins',sans-serif; }
 #replay-btn{
@@ -390,8 +404,37 @@ h1{
 
 @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
 
+/* ---------- RULES ---------- */
+#rules-btn{
+  position:fixed; right:24px; bottom:24px; z-index:70;
+  width:46px; height:46px; border-radius:50%; border:none; cursor:pointer;
+  font-family:'Cinzel',serif; font-size:1.3rem; font-weight:700;
+  color:var(--felt-2); background:linear-gradient(160deg,var(--gold-bright),var(--gold));
+  box-shadow:0 8px 20px rgba(212,175,106,.4);
+  transition:transform .15s ease, filter .15s ease;
+}
+#rules-btn:hover{ transform:translateY(-2px) scale(1.05); filter:brightness(1.05); }
+
+#rules-panel{
+  position:fixed; inset:0; z-index:80;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(4,10,7,.78); backdrop-filter:blur(3px);
+  animation:fadeIn .25s ease both;
+}
+.rules-card{
+  background:linear-gradient(160deg,var(--felt-1),var(--felt-2));
+  border:1px solid rgba(212,175,106,.5);
+  border-radius:18px; padding:2em 2.6em; width:560px; max-width:88vw;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
+  animation:victoryPop .4s cubic-bezier(.2,1.4,.4,1) both;
+  display:flex; flex-direction:column; align-items:center;
+}
+.rules-card h2{ font-family:'Cinzel',serif; color:var(--gold-bright); margin:0 0 .8em; font-size:1.35rem; }
+.rules-card ul{ margin:0 0 1.3em; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; align-self:stretch; }
+.rules-card li{ font-size:.92rem; line-height:1.4; }
+
 @media (max-width:1100px){
-  .timeline-panel{ width:170px; }
+  .timeline-panel{ width:260px; height:190px; }
   .tl-entry{ font-size:.74rem; padding:6px 8px; }
 }
 @media (max-width:900px){

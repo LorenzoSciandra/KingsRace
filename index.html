@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Kings' Race</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 font-size=%2290%22><text y=%2280%22>🏇</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 font-size=%2290%22><text y=%2280%22>🂠</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,30 +16,30 @@
 
 <!-- KING SELECTION -->
 <section id="screen-select">
-  <h1>🏇 The Kings' Race</h1>
+  <h1>The Kings' Race</h1>
   <p class="subtitle">Choose your King. The computer will pick another. Aces push a King forward, Jokers send same-colored Kings back — first to the finish line wins.</p>
   <div class="king-picker">
-    <button class="pick-card black" data-suit="S"><span class="corner">K</span><span class="pip">♠</span><span class="name">Spades</span></button>
-    <button class="pick-card red"   data-suit="D"><span class="corner">K</span><span class="pip">♦</span><span class="name">Diamonds</span></button>
-    <button class="pick-card black" data-suit="C"><span class="corner">K</span><span class="pip">♣</span><span class="name">Clubs</span></button>
-    <button class="pick-card red"   data-suit="H"><span class="corner">K</span><span class="pip">♥</span><span class="name">Hearts</span></button>
+    <button class="pick-card black" data-suit="S"></button>
+    <button class="pick-card red"   data-suit="D"></button>
+    <button class="pick-card black" data-suit="C"></button>
+    <button class="pick-card red"   data-suit="H"></button>
   </div>
 </section>
 
 <!-- RACE TABLE -->
 <section id="screen-race" class="hidden">
   <header class="race-header">
-    <h1 class="mini-title">🏇 Kings' Race</h1>
+    <h1 class="mini-title">Kings' Race</h1>
     <div class="legend" id="legend"></div>
     <button id="pause-btn" class="pause-btn">Pause</button>
   </header>
 
-  <div class="race-main">
-    <aside class="timeline-panel">
-      <span class="timeline-title">Race Log</span>
-      <ol id="timeline" class="timeline"></ol>
-    </aside>
+  <aside class="timeline-panel">
+    <span class="timeline-title">Race Log</span>
+    <ol id="timeline" class="timeline"></ol>
+  </aside>
 
+  <div class="race-main">
     <aside class="deck-panel">
       <div class="pile">
         <div class="deck-stack" id="deck-stack"><i class="pc-back"></i><i class="pc-back"></i><i class="pc-back"></i></div>
@@ -79,6 +79,25 @@
     <h2 id="victory-title"></h2>
     <p id="victory-subtitle"></p>
     <button id="replay-btn">New Race</button>
+  </div>
+</div>
+
+<!-- RULES -->
+<button id="rules-btn" aria-label="How to play">?</button>
+<div id="rules-panel" class="hidden">
+  <div class="rules-card">
+    <h2>How to Play</h2>
+    <ul>
+      <li>Pick a King — the computer picks another.</li>
+      <li>Cards are drawn one by one from the deck.</li>
+      <li>A card's suit moves that King up one row.</li>
+      <li>Kings only move within their own column.</li>
+      <li>When all 4 Kings pass a row, its hidden card flips.</li>
+      <li>An Ace there sends that King one row further.</li>
+      <li>A Joker sends both same-colored Kings back a row.</li>
+      <li>First King to reach the top row wins!</li>
+    </ul>
+    <button id="rules-close" class="pause-btn">Close</button>
   </div>
 </div>
 

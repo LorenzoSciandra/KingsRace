@@ -43,13 +43,14 @@ async function sleep(ms) {
   await new Promise(r => setTimeout(r, ms));
   if (paused) await new Promise(res => { pauseResolve = res; });
 }
-function pauseGame() {
+function pauseGame(showOverlay = true) {
   if (gameOver || paused) return;
   paused = true;
+  if (!showOverlay) return;
   const ov = document.createElement('div');
   ov.className = 'paused-overlay';
   ov.id = 'paused-overlay';
-  ov.innerHTML = `<div class="paused-box"><span class="paused-title">Paused</span><button class="pause-btn" id="resume-btn">▶ Resume</button></div>`;
+  ov.innerHTML = `<div class="paused-box"><span class="paused-title">Paused</span><button class="pause-btn" id="resume-btn">Resume</button></div>`;
   screenRace.appendChild(ov);
   document.getElementById('resume-btn').addEventListener('click', resumeGame);
 }
@@ -93,7 +94,8 @@ function cardInnerHTML(rank, sym, figureGlyph) {
     `<span class="pc-corner br">${rank}<br>${sym}</span>`;
 }
 function jokerInnerHTML(color) {
-  return `<div class="pc-center"><span class="joker-badge ${color}"><span class="figure-glyph">🃏</span></span><span class="joker-label">JOKER</span></div>`;
+  const label = color === 'red' ? 'RED JOKER' : 'BLACK JOKER';
+  return `<div class="pc-center"><span class="joker-badge ${color}"><span class="figure-glyph">🃏</span></span><span class="joker-label ${color}">${label}</span></div>`;
 }
 
 // ---------- Board construction ----------
@@ -178,8 +180,9 @@ function logEvent(msg) {
   const li = document.createElement('li');
   li.className = 'tl-entry';
   li.textContent = msg;
-  timelineEl.prepend(li);
-  while (timelineEl.children.length > 40) timelineEl.lastChild.remove();
+  timelineEl.appendChild(li);
+  while (timelineEl.children.length > 40) timelineEl.firstChild.remove();
+  timelineEl.scrollTop = timelineEl.scrollHeight;
 }
 function updateDeckCounter() {
   deckCounterEl.textContent = `${mainDeck.length - deckIdx} cards left`;
@@ -196,7 +199,7 @@ async function advanceKing(suit) {
   if (gameOver || kingPos[suit] === 0) return;
   const newRow = kingPos[suit] - 1;
   moveKing(suit, newRow);
-  logEvent(`${SUIT_SYMBOL[suit]} The ${SUIT_NAME[suit]} King advances!`);
+  logEvent(`${SUIT_SYMBOL[suit]} ${SUIT_NAME[suit]} King advances!`);
   await sleep(680);
   if (newRow === 0) { await win(suit); return; }
   await checkCheckpoints();
@@ -210,7 +213,7 @@ async function checkCheckpoints() {
       revealed.add(r);
       const card = bonusRow[r];
       revealBonusCard(r, card);
-      logEvent(`🎯 All Kings passed row ${r} — the bonus card is revealed!`);
+      logEvent(`Row ${r} cleared — bonus revealed!`);
       await sleep(750);
       if (card.type === 'ace') {
         logEvent(`${SUIT_SYMBOL[card.suit]} Ace of ${SUIT_NAME[card.suit]}!`);
@@ -220,7 +223,7 @@ async function checkCheckpoints() {
         const affected = SUITS.filter(s => SUIT_COLOR[s] === card.color);
         logEvent(`🃏 ${card.color === 'red' ? 'Red' : 'Black'} Joker!`);
         await sleep(450);
-        logEvent(`The ${affected.map(s => SUIT_NAME[s]).join(' and ')} Kings fall back.`);
+        logEvent(`${affected.map(s => SUIT_NAME[s]).join(' & ')} fall back.`);
         affected.forEach(s => moveKing(s, Math.min(7, kingPos[s] + 1)));
         await sleep(680);
       }
@@ -249,7 +252,7 @@ async function win(suit) {
   gameOver = true;
   pauseBtn.disabled = true;
   kingEls[suit].classList.add('winner');
-  logEvent(`🏆 The ${SUIT_NAME[suit]} King crosses the finish line!`);
+  logEvent(`${SUIT_NAME[suit]} King wins the race!`);
   await sleep(1000);
   showVictory(suit);
 }
@@ -257,13 +260,13 @@ async function win(suit) {
 function showVictory(suit) {
   victoryWinnerEl.innerHTML = `<div class="pc-front ${SUIT_COLOR[suit]}">${cardInnerHTML('K', SUIT_SYMBOL[suit], '♚')}</div>`;
   if (suit === playerSuit) {
-    victoryTitleEl.textContent = '🏆 You Win!';
+    victoryTitleEl.textContent = 'You Win!';
     victorySubtitleEl.textContent = `Your ${SUIT_NAME[suit]} King crossed the finish line first.`;
   } else if (suit === computerSuit) {
-    victoryTitleEl.textContent = '😔 Computer Wins';
+    victoryTitleEl.textContent = 'Computer Wins';
     victorySubtitleEl.textContent = `The computer's ${SUIT_NAME[suit]} King beat you to the finish line.`;
   } else {
-    victoryTitleEl.textContent = '🐎 Surprise Winner!';
+    victoryTitleEl.textContent = 'Surprise Winner!';
     victorySubtitleEl.textContent = `The ${SUIT_NAME[suit]} King, chosen by neither racer, won the race!`;
   }
   screenVictory.classList.remove('hidden');
@@ -315,7 +318,7 @@ async function startRace() {
   await sleep(1400);
   deckStackEl.classList.remove('shuffling');
 
-  logEvent('🏇 Riders, get ready...');
+  logEvent('Riders, get ready...');
   await sleep(500);
   await countdown();
   gameLoop();
@@ -331,6 +334,25 @@ function chooseKing(suit) {
 
 // ---------- Events ----------
 document.querySelectorAll('.pick-card').forEach(btn => {
-  btn.addEventListener('click', () => chooseKing(btn.dataset.suit));
+  const suit = btn.dataset.suit;
+  const color = btn.classList.contains('red') ? 'red' : 'black';
+  btn.innerHTML = `<div class="card-face pc-front ${color}">${cardInnerHTML('K', SUIT_SYMBOL[suit], '♚')}</div>` +
+    `<span class="name">${SUIT_NAME[suit]}</span>`;
+  btn.addEventListener('click', () => chooseKing(suit));
 });
 document.getElementById('replay-btn').addEventListener('click', () => location.reload());
+
+const rulesBtn = document.getElementById('rules-btn');
+const rulesPanel = document.getElementById('rules-panel');
+let pausedByRules = false;
+rulesBtn.addEventListener('click', () => {
+  if (!screenRace.classList.contains('hidden') && !gameOver && !paused) {
+    pauseGame(false);
+    pausedByRules = true;
+  }
+  rulesPanel.classList.remove('hidden');
+});
+document.getElementById('rules-close').addEventListener('click', () => {
+  rulesPanel.classList.add('hidden');
+  if (pausedByRules) { resumeGame(); pausedByRules = false; }
+});
