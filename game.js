@@ -32,7 +32,6 @@ const discardStackEl = document.getElementById('discard-stack');
 const currentCardEl = document.getElementById('current-card');
 const countdownEl = document.getElementById('countdown');
 const countdownNumberEl = document.getElementById('countdown-number');
-const confettiEl = document.getElementById('confetti');
 const victoryWinnerEl = document.getElementById('victory-winner');
 const victoryTitleEl = document.getElementById('victory-title');
 const victorySubtitleEl = document.getElementById('victory-subtitle');
@@ -87,16 +86,18 @@ function newGame() {
 }
 
 // ---------- Bicycle-style card markup ----------
-function cardInnerHTML(rank, sym, figureGlyph) {
-  const figure = figureGlyph ? `<span class="figure-glyph">${figureGlyph}</span>` : '';
-  const centerClass = figureGlyph ? 'pc-center has-figure' : 'pc-center';
+const FACE_RANKS = { K: 'king', Q: 'queen', J: 'jack' };
+function cardInnerHTML(rank, sym, color) {
+  const faceName = FACE_RANKS[rank];
+  const figure = faceName ? `<img class="figure-img" src="assets/images/${color}_${faceName}.png" alt="">` : '';
+  const centerClass = faceName ? 'pc-center has-figure' : 'pc-center';
   return `<span class="pc-corner tl">${rank}<br>${sym}</span>` +
     `<div class="${centerClass}">${figure}<span class="big-pip">${sym}</span></div>` +
     `<span class="pc-corner br">${rank}<br>${sym}</span>`;
 }
 function jokerInnerHTML(color) {
   const label = color === 'red' ? 'RED JOKER' : 'BLACK JOKER';
-  return `<div class="pc-center"><span class="joker-badge ${color}"><span class="figure-glyph">🃏</span></span><span class="joker-label ${color}">${label}</span></div>`;
+  return `<div class="pc-center"><img class="figure-img joker-img" src="assets/images/${color}_joker.png" alt=""><span class="joker-label ${color}">${label}</span></div>`;
 }
 
 // ---------- Board construction ----------
@@ -130,7 +131,7 @@ function renderTokens() {
     el.className = `token king pc-front ${SUIT_COLOR[suit]} enter`;
     if (suit === playerSuit) el.classList.add('player');
     if (suit === computerSuit) el.classList.add('computer');
-    el.innerHTML = cardInnerHTML('K', SUIT_GLYPH[suit], '♚');
+    el.innerHTML = cardInnerHTML('K', SUIT_GLYPH[suit], SUIT_COLOR[suit]);
     positionToken(el, kingPos[suit], SUIT_COL[suit]);
     el.style.animationDelay = (i * 120) + 'ms';
     tokensLayer.appendChild(el);
@@ -158,7 +159,7 @@ function revealBonusCard(row, card) {
   const front = el.querySelector('.pc-front');
   if (card.type === 'ace') {
     front.classList.add(SUIT_COLOR[card.suit]);
-    front.innerHTML = cardInnerHTML('A', SUIT_GLYPH[card.suit]);
+    front.innerHTML = cardInnerHTML('A', SUIT_GLYPH[card.suit], SUIT_COLOR[card.suit]);
   } else {
     front.classList.add(card.color);
     front.innerHTML = jokerInnerHTML(card.color);
@@ -170,7 +171,7 @@ function showCurrentCard(card) {
   const flipper = currentCardEl.querySelector('.flipper');
   const front = currentCardEl.querySelector('.pc-front');
   front.className = `face pc-front ${SUIT_COLOR[card.suit]}`;
-  front.innerHTML = cardInnerHTML(card.rank, SUIT_GLYPH[card.suit]);
+  front.innerHTML = cardInnerHTML(card.rank, SUIT_GLYPH[card.suit], SUIT_COLOR[card.suit]);
   flipper.classList.add('flipped');
 }
 function hideCurrentCard() {
@@ -259,7 +260,7 @@ async function win(suit) {
 }
 
 function showVictory(suit) {
-  victoryWinnerEl.innerHTML = `<div class="pc-front ${SUIT_COLOR[suit]}">${cardInnerHTML('K', SUIT_GLYPH[suit], '♚')}</div>`;
+  victoryWinnerEl.innerHTML = `<div class="pc-front ${SUIT_COLOR[suit]}">${cardInnerHTML('K', SUIT_GLYPH[suit], SUIT_COLOR[suit])}</div>`;
   if (suit === playerSuit) {
     victoryTitleEl.textContent = 'You Win!';
     victorySubtitleEl.textContent = `Your ${SUIT_NAME[suit]} King crossed the finish line first.`;
@@ -271,21 +272,6 @@ function showVictory(suit) {
     victorySubtitleEl.textContent = `The ${SUIT_NAME[suit]} King, chosen by neither racer, won the race!`;
   }
   screenVictory.classList.remove('hidden');
-  spawnConfetti();
-}
-
-function spawnConfetti() {
-  confettiEl.innerHTML = '';
-  const colors = ['#d4af6a', '#f3d99a', '#c0392b', '#eae4d6', '#7a9bc4'];
-  for (let i = 0; i < 70; i++) {
-    const p = document.createElement('div');
-    p.className = 'confetti-piece';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.background = colors[(Math.random() * colors.length) | 0];
-    p.style.animationDuration = (2 + Math.random() * 2) + 's';
-    p.style.animationDelay = (Math.random() * 1.2) + 's';
-    confettiEl.appendChild(p);
-  }
 }
 
 async function countdown() {
@@ -336,7 +322,7 @@ function chooseKing(suit) {
 document.querySelectorAll('.pick-card').forEach(btn => {
   const suit = btn.dataset.suit;
   const color = btn.classList.contains('red') ? 'red' : 'black';
-  btn.innerHTML = `<div class="card-face pc-front ${color}">${cardInnerHTML('K', SUIT_GLYPH[suit], '♚')}</div>`;
+  btn.innerHTML = `<div class="card-face pc-front ${color}">${cardInnerHTML('K', SUIT_GLYPH[suit], color)}</div>`;
   btn.addEventListener('click', () => chooseKing(suit));
 });
 document.getElementById('replay-btn').addEventListener('click', () => location.reload());

@@ -223,30 +223,20 @@ h1{
 }
 .pc-center .big-pip{ font-size:1.8rem; }
 .pc-center.has-figure .big-pip{ font-size:.85rem; margin-top:-2px; }
-.pc-center .figure-glyph{ font-size:2.1rem; line-height:1; }
+.pc-center .figure-img{ width:56%; height:auto; display:block; filter:drop-shadow(0 1px 2px rgba(0,0,0,.3)); }
+.pc-center .joker-img{ width:48%; }
 .pc-center .joker-label{
   font-family:'Card Characters','Cinzel',serif; font-weight:700; font-size:.52rem; letter-spacing:.1em;
   margin-top:3px; padding:1px 6px; border-radius:6px;
 }
 .pc-center .joker-label.red{ color:#fff; background:var(--red); }
 .pc-center .joker-label.black{ color:#fff; background:var(--black); }
-.joker-badge{
-  width:62%; aspect-ratio:1; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:0 3px 8px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.5);
-}
-.joker-badge.red{ background:linear-gradient(160deg,#e0574a,var(--red)); }
-.joker-badge.black{ background:linear-gradient(160deg,#4a4a4a,var(--black)); }
-.joker-badge .figure-glyph{ font-size:1.9rem; filter:drop-shadow(0 1px 1px rgba(0,0,0,.4)); }
-.pc-front.red .pc-corner, .pc-front.red .big-pip, .pc-front.red .figure-glyph{ color:var(--red); }
-.pc-front.black .pc-corner, .pc-front.black .big-pip, .pc-front.black .figure-glyph{ color:var(--black); }
+.pc-front.red .pc-corner, .pc-front.red .big-pip{ color:var(--red); }
+.pc-front.black .pc-corner, .pc-front.black .big-pip{ color:var(--black); }
 
 /* current-card face sizing */
 .flip-container .pc-center .big-pip{ font-size:2.4rem; }
 .flip-container .pc-corner{ font-size:1rem; }
-.flip-container .figure-glyph{ font-size:2.9rem; }
-.flip-container .joker-badge{ width:64%; }
-.flip-container .joker-badge .figure-glyph{ font-size:2.3rem; }
 .flip-container .joker-label{ font-size:.65rem; }
 
 /* ---------- BOARD ---------- */
@@ -309,7 +299,6 @@ h1{
 .token.king{ z-index:2; }
 .token.king .pc-corner{ font-size:.6rem; }
 .token.king .big-pip{ font-size:.7rem; margin-top:-1px; }
-.token.king .figure-glyph{ font-size:1.55rem; }
 .token.king.player{ box-shadow:0 0 0 2px var(--gold-bright), 0 4px 14px rgba(243,217,154,.5); }
 .token.king.computer{ box-shadow:0 0 0 2px #7a9bc4, 0 4px 14px rgba(122,155,196,.5); }
 .token.king.winner{ animation:winnerPulse 1s ease infinite; z-index:5; }
@@ -317,8 +306,6 @@ h1{
 .token.bonus-card{ perspective:600px; }
 .token.bonus-card .pc-corner{ font-size:.55rem; }
 .token.bonus-card .big-pip{ font-size:1.05rem; }
-.token.bonus-card .figure-glyph{ font-size:1.3rem; }
-.token.bonus-card .joker-badge{ width:58%; }
 .token.bonus-card .joker-label{ font-size:.38rem; padding:1px 4px; letter-spacing:.03em; }
 
 /* entrance dealt-from-left animation */
@@ -386,10 +373,8 @@ h1{
 }
 .victory-winner .pc-front{ width:100%; height:100%; }
 .victory-winner .big-pip{ font-size:1rem; }
-.victory-winner .figure-glyph{ font-size:3.4rem; }
 
 .pick-card .big-pip{ font-size:1rem; }
-.pick-card .figure-glyph{ font-size:2.7rem; }
 #victory-title{ font-family:'Card Characters','Cinzel',serif; color:var(--gold-bright); margin:.3em 0 .2em; font-size:1.9rem; }
 #victory-subtitle{ opacity:.85; font-size:1rem; max-width:340px; }
 #replay-btn{
@@ -399,15 +384,6 @@ h1{
   transition:transform .2s ease;
 }
 #replay-btn:hover{ transform:translateY(-3px); }
-
-#confetti{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:1; }
-.confetti-piece{
-  position:absolute; top:-10px; width:8px; height:14px; opacity:.9;
-  animation:confettiFall linear forwards;
-}
-@keyframes confettiFall{
-  to{ transform:translateY(110vh) rotate(540deg); opacity:.3; }
-}
 
 @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
 
