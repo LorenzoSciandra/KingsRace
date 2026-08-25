@@ -1,3 +1,9 @@
+@font-face{
+  font-family:'Card Characters';
+  src:url('assets/fonts/Card%20Characters/CARDC___.TTF') format('truetype');
+  font-display:swap;
+}
+
 :root{
   --felt-1:#0e3d2b;
   --felt-2:#06241a;
@@ -23,7 +29,7 @@ body{
   overflow:hidden;
   background:var(--felt-2);
   color:var(--ink);
-  font-family:'Poppins', system-ui, sans-serif;
+  font-family:'Card Characters','Poppins',system-ui,sans-serif;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -48,7 +54,7 @@ body{
 }
 
 h1{
-  font-family:'Cinzel', serif;
+  font-family:'Card Characters','Cinzel',serif;
   font-weight:900;
   letter-spacing:.03em;
   color:var(--gold-bright);
@@ -70,8 +76,6 @@ h1{
 .king-picker{ display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
 .pick-card{
   border:none; background:none; padding:0; cursor:pointer;
-  font-family:'Cinzel',serif;
-  display:flex; flex-direction:column; align-items:center; gap:10px;
   transition:transform .25s ease;
 }
 .pick-card .card-face{
@@ -80,9 +84,6 @@ h1{
 }
 .pick-card:hover{ transform:translateY(-8px) scale(1.04); }
 .pick-card:hover .card-face{ box-shadow:0 18px 34px rgba(212,175,106,.35); }
-.pick-card .name{ font-family:'Poppins',sans-serif; font-size:.85rem; letter-spacing:.04em; opacity:.8; }
-.pick-card.red .name{ color:var(--red); }
-.pick-card.black .name{ color:var(--black); }
 
 /* ---------- RACE SCREEN (single-page layout) ---------- */
 #screen-race{
@@ -97,7 +98,7 @@ h1{
 .mini-title{ font-size:1.3rem; white-space:nowrap; }
 
 .pause-btn{
-  font-family:'Poppins',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.03em;
+  font-weight:600; font-size:.85rem; letter-spacing:.03em;
   padding:.55em 1.2em; border-radius:24px; cursor:pointer;
   color:var(--felt-2); background:linear-gradient(160deg,var(--gold-bright),var(--gold));
   border:none; box-shadow:0 6px 16px rgba(212,175,106,.35);
@@ -118,7 +119,7 @@ h1{
   display:flex; flex-direction:column; gap:8px;
 }
 .timeline-title{
-  font-family:'Cinzel',serif; font-size:.85rem; letter-spacing:.15em; text-transform:uppercase;
+  font-family:'Card Characters','Cinzel',serif; font-size:.85rem; letter-spacing:.15em; text-transform:uppercase;
   color:var(--gold); opacity:.8; flex:0 0 auto;
 }
 .timeline{
@@ -149,7 +150,7 @@ h1{
 }
 .pile{ display:flex; flex-direction:column; align-items:center; gap:10px; }
 .pile-label{
-  font-family:'Cinzel',serif; font-size:.6rem; letter-spacing:.18em; text-transform:uppercase;
+  font-family:'Card Characters','Cinzel',serif; font-size:.6rem; letter-spacing:.18em; text-transform:uppercase;
   color:var(--gold); opacity:.65;
 }
 
@@ -208,9 +209,10 @@ h1{
   box-shadow:0 4px 10px rgba(0,0,0,.4);
   position:relative;
   overflow:hidden;
+  font-family:'Card Characters','Cinzel',serif;
 }
 .pc-corner{
-  position:absolute; font-family:'Cinzel',serif; font-weight:700;
+  position:absolute; font-weight:700;
   line-height:1.05; text-align:center; font-size:.8rem;
 }
 .pc-corner.tl{ top:6%; left:9%; }
@@ -223,7 +225,7 @@ h1{
 .pc-center.has-figure .big-pip{ font-size:.85rem; margin-top:-2px; }
 .pc-center .figure-glyph{ font-size:2.1rem; line-height:1; }
 .pc-center .joker-label{
-  font-family:'Cinzel',serif; font-weight:700; font-size:.52rem; letter-spacing:.1em;
+  font-family:'Card Characters','Cinzel',serif; font-weight:700; font-size:.52rem; letter-spacing:.1em;
   margin-top:3px; padding:1px 6px; border-radius:6px;
 }
 .pc-center .joker-label.red{ color:#fff; background:var(--red); }
@@ -269,7 +271,7 @@ h1{
 .rail{
   position:absolute; left:100%; margin-left:14px; width:max-content;
   display:flex; align-items:center; z-index:3;
-  font-family:'Cinzel',serif; letter-spacing:.2em; font-size:.78rem; color:var(--gold);
+  font-family:'Card Characters','Cinzel',serif; letter-spacing:.2em; font-size:.78rem; color:var(--gold);
   opacity:.85; pointer-events:none; white-space:nowrap;
 }
 .rail-top{ top:0; height:12.5%; }
@@ -277,7 +279,7 @@ h1{
 
 .rider-label{
   position:absolute; top:100%; margin-top:12px; width:20%; text-align:center;
-  font-family:'Cinzel',serif; font-size:.85rem; font-weight:700; letter-spacing:.15em;
+  font-family:'Card Characters','Cinzel',serif; font-size:.85rem; font-weight:700; letter-spacing:.15em;
   color:var(--gold-bright); opacity:.9; pointer-events:none; transition:left .65s cubic-bezier(.34,1.3,.4,1);
 }
 
@@ -336,7 +338,7 @@ h1{
   background:rgba(0,0,0,.35); z-index:50; pointer-events:none;
 }
 #countdown-number{
-  font-family:'Cinzel',serif; font-size:8rem; color:var(--gold-bright);
+  font-family:'Card Characters','Cinzel',serif; font-size:8rem; color:var(--gold-bright);
   text-shadow:0 0 40px rgba(243,217,154,.7);
 }
 #countdown-number.pulse{ animation:countPulse .65s ease; }
@@ -354,7 +356,7 @@ h1{
 }
 .paused-box{ display:flex; flex-direction:column; align-items:center; gap:22px; }
 .paused-title{
-  font-family:'Cinzel',serif; font-size:2.4rem; letter-spacing:.15em; color:var(--gold-bright);
+  font-family:'Card Characters','Cinzel',serif; font-size:2.4rem; letter-spacing:.15em; color:var(--gold-bright);
   text-shadow:0 0 40px rgba(243,217,154,.5);
 }
 
@@ -388,10 +390,10 @@ h1{
 
 .pick-card .big-pip{ font-size:1rem; }
 .pick-card .figure-glyph{ font-size:2.7rem; }
-#victory-title{ font-family:'Cinzel',serif; color:var(--gold-bright); margin:.3em 0 .2em; font-size:1.9rem; }
-#victory-subtitle{ opacity:.85; font-size:1rem; max-width:340px; font-family:'Poppins',sans-serif; }
+#victory-title{ font-family:'Card Characters','Cinzel',serif; color:var(--gold-bright); margin:.3em 0 .2em; font-size:1.9rem; }
+#victory-subtitle{ opacity:.85; font-size:1rem; max-width:340px; }
 #replay-btn{
-  margin-top:1.4em; padding:.7em 1.8em; font-size:.95rem; font-weight:600; font-family:'Poppins',sans-serif;
+  margin-top:1.4em; padding:.7em 1.8em; font-size:.95rem; font-weight:600;
   letter-spacing:.03em; color:var(--felt-2); background:linear-gradient(160deg,var(--gold-bright),var(--gold));
   border:none; border-radius:24px; cursor:pointer; box-shadow:0 8px 20px rgba(212,175,106,.4);
   transition:transform .2s ease;
@@ -413,7 +415,7 @@ h1{
 #rules-btn{
   position:fixed; right:24px; bottom:24px; z-index:70;
   width:46px; height:46px; border-radius:50%; border:none; cursor:pointer;
-  font-family:'Cinzel',serif; font-size:1.3rem; font-weight:700;
+  font-family:'Card Characters','Cinzel',serif; font-size:1.3rem; font-weight:700;
   color:var(--felt-2); background:linear-gradient(160deg,var(--gold-bright),var(--gold));
   box-shadow:0 8px 20px rgba(212,175,106,.4);
   transition:transform .15s ease, filter .15s ease;
@@ -434,7 +436,7 @@ h1{
   animation:victoryPop .4s cubic-bezier(.2,1.4,.4,1) both;
   display:flex; flex-direction:column; align-items:center;
 }
-.rules-card h2{ font-family:'Cinzel',serif; color:var(--gold-bright); margin:0 0 .8em; font-size:1.35rem; }
+.rules-card h2{ font-family:'Card Characters','Cinzel',serif; color:var(--gold-bright); margin:0 0 .8em; font-size:1.35rem; }
 .rules-card ul{ margin:0 0 1.3em; padding-left:1.1em; display:flex; flex-direction:column; gap:.55em; align-self:stretch; }
 .rules-card li{ font-size:.92rem; line-height:1.4; }
 

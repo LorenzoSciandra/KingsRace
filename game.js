@@ -3,6 +3,7 @@
 // ---------- Constants ----------
 const SUITS = ['S', 'D', 'C', 'H'];
 const SUIT_SYMBOL = { S: '♠', D: '♦', C: '♣', H: '♥' };
+const SUIT_GLYPH = { S: '}', D: '[', C: ']', H: '{' }; // pip glyphs in the "Card Characters" font
 const SUIT_NAME = { S: 'Spades', D: 'Diamonds', C: 'Clubs', H: 'Hearts' };
 const SUIT_COLOR = { S: 'black', D: 'red', C: 'black', H: 'red' };
 const SUIT_COL = { S: 0, D: 1, C: 2, H: 3 };
@@ -129,7 +130,7 @@ function renderTokens() {
     el.className = `token king pc-front ${SUIT_COLOR[suit]} enter`;
     if (suit === playerSuit) el.classList.add('player');
     if (suit === computerSuit) el.classList.add('computer');
-    el.innerHTML = cardInnerHTML('K', SUIT_SYMBOL[suit], '♚');
+    el.innerHTML = cardInnerHTML('K', SUIT_GLYPH[suit], '♚');
     positionToken(el, kingPos[suit], SUIT_COL[suit]);
     el.style.animationDelay = (i * 120) + 'ms';
     tokensLayer.appendChild(el);
@@ -157,7 +158,7 @@ function revealBonusCard(row, card) {
   const front = el.querySelector('.pc-front');
   if (card.type === 'ace') {
     front.classList.add(SUIT_COLOR[card.suit]);
-    front.innerHTML = cardInnerHTML('A', SUIT_SYMBOL[card.suit]);
+    front.innerHTML = cardInnerHTML('A', SUIT_GLYPH[card.suit]);
   } else {
     front.classList.add(card.color);
     front.innerHTML = jokerInnerHTML(card.color);
@@ -169,7 +170,7 @@ function showCurrentCard(card) {
   const flipper = currentCardEl.querySelector('.flipper');
   const front = currentCardEl.querySelector('.pc-front');
   front.className = `face pc-front ${SUIT_COLOR[card.suit]}`;
-  front.innerHTML = cardInnerHTML(card.rank, SUIT_SYMBOL[card.suit]);
+  front.innerHTML = cardInnerHTML(card.rank, SUIT_GLYPH[card.suit]);
   flipper.classList.add('flipped');
 }
 function hideCurrentCard() {
@@ -258,7 +259,7 @@ async function win(suit) {
 }
 
 function showVictory(suit) {
-  victoryWinnerEl.innerHTML = `<div class="pc-front ${SUIT_COLOR[suit]}">${cardInnerHTML('K', SUIT_SYMBOL[suit], '♚')}</div>`;
+  victoryWinnerEl.innerHTML = `<div class="pc-front ${SUIT_COLOR[suit]}">${cardInnerHTML('K', SUIT_GLYPH[suit], '♚')}</div>`;
   if (suit === playerSuit) {
     victoryTitleEl.textContent = 'You Win!';
     victorySubtitleEl.textContent = `Your ${SUIT_NAME[suit]} King crossed the finish line first.`;
@@ -335,8 +336,7 @@ function chooseKing(suit) {
 document.querySelectorAll('.pick-card').forEach(btn => {
   const suit = btn.dataset.suit;
   const color = btn.classList.contains('red') ? 'red' : 'black';
-  btn.innerHTML = `<div class="card-face pc-front ${color}">${cardInnerHTML('K', SUIT_SYMBOL[suit], '♚')}</div>` +
-    `<span class="name">${SUIT_NAME[suit]}</span>`;
+  btn.innerHTML = `<div class="card-face pc-front ${color}">${cardInnerHTML('K', SUIT_GLYPH[suit], '♚')}</div>`;
   btn.addEventListener('click', () => chooseKing(suit));
 });
 document.getElementById('replay-btn').addEventListener('click', () => location.reload());
