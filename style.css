@@ -444,11 +444,11 @@ h1{
 .side-btn{
   width:46px; height:46px; border-radius:50%; text-decoration:none;
   display:flex; align-items:center; justify-content:center;
-  font-family:'Card Characters','Cinzel',serif; font-size:1rem; font-weight:700;
   color:var(--felt-2); background:linear-gradient(160deg,var(--gold-bright),var(--gold));
   box-shadow:0 8px 20px rgba(212,175,106,.4);
   transition:transform .15s ease, filter .15s ease;
 }
+.side-btn img{ width:56%; height:56%; }
 .side-btn:hover{ transform:translateY(-2px) scale(1.05); filter:brightness(1.05); }
 
 #rules-panel{
