@@ -440,6 +440,17 @@ h1{
 }
 #rules-btn:hover{ transform:translateY(-2px) scale(1.05); filter:brightness(1.05); }
 
+.side-links{ position:fixed; left:24px; bottom:24px; z-index:70; display:flex; gap:12px; }
+.side-btn{
+  width:46px; height:46px; border-radius:50%; text-decoration:none;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Card Characters','Cinzel',serif; font-size:1rem; font-weight:700;
+  color:var(--felt-2); background:linear-gradient(160deg,var(--gold-bright),var(--gold));
+  box-shadow:0 8px 20px rgba(212,175,106,.4);
+  transition:transform .15s ease, filter .15s ease;
+}
+.side-btn:hover{ transform:translateY(-2px) scale(1.05); filter:brightness(1.05); }
+
 #rules-panel{
   position:fixed; inset:0; z-index:80;
   display:flex; align-items:center; justify-content:center;
