@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Kings' Race</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 font-size=%2290%22><text y=%2280%22>🏇</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="table-bg"></div>
+
+<!-- KING SELECTION -->
+<section id="screen-select">
+  <h1>🏇 The Kings' Race</h1>
+  <p class="subtitle">Choose your King. The computer will pick another. Aces push a King forward, Jokers send same-colored Kings back — first to the finish line wins.</p>
+  <div class="king-picker">
+    <button class="pick-card black" data-suit="S"><span class="corner">K</span><span class="pip">♠</span><span class="name">Spades</span></button>
+    <button class="pick-card red"   data-suit="D"><span class="corner">K</span><span class="pip">♦</span><span class="name">Diamonds</span></button>
+    <button class="pick-card black" data-suit="C"><span class="corner">K</span><span class="pip">♣</span><span class="name">Clubs</span></button>
+    <button class="pick-card red"   data-suit="H"><span class="corner">K</span><span class="pip">♥</span><span class="name">Hearts</span></button>
+  </div>
+</section>
+
+<!-- RACE TABLE -->
+<section id="screen-race" class="hidden">
+  <header class="race-header">
+    <h1 class="mini-title">🏇 Kings' Race</h1>
+    <div class="legend" id="legend"></div>
+    <button id="pause-btn" class="pause-btn">Pause</button>
+  </header>
+
+  <div class="race-main">
+    <aside class="deck-panel">
+      <div class="deck-stack" id="deck-stack"><i></i><i></i><i></i></div>
+      <div class="flip-container" id="current-card">
+        <div class="flipper">
+          <div class="face pc-back"></div>
+          <div class="face pc-front"></div>
+        </div>
+      </div>
+      <div id="deck-counter" class="deck-counter">44 cards left</div>
+    </aside>
+
+    <div id="board">
+      <span class="rail rail-top">FINISH</span>
+      <span class="rail rail-bottom">START</span>
+      <div id="cells"></div>
+      <div id="tokens"></div>
+    </div>
+  </div>
+
+  <p id="status" class="status"></p>
+  <div id="countdown" class="countdown hidden"></div>
+</section>
+
+<!-- VICTORY -->
+<div id="screen-victory" class="hidden">
+  <div id="confetti"></div>
+  <div class="victory-card">
+    <div id="victory-winner" class="victory-winner"></div>
+    <h2 id="victory-title"></h2>
+    <p id="victory-subtitle"></p>
+    <button id="replay-btn">New Race</button>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
