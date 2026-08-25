@@ -30,7 +30,6 @@
 <section id="screen-race" class="hidden">
   <header class="race-header">
     <h1 class="mini-title">Kings' Race</h1>
-    <div class="legend" id="legend"></div>
     <button id="pause-btn" class="pause-btn">Pause</button>
   </header>
 
@@ -62,13 +61,15 @@
       <div id="board">
         <span class="rail rail-top">FINISH</span>
         <span class="rail rail-bottom">START</span>
+        <span class="rider-label" id="you-label">YOU</span>
+        <span class="rider-label" id="pc-label">PC</span>
         <div id="cells"></div>
         <div id="tokens"></div>
       </div>
     </div>
   </div>
 
-  <div id="countdown" class="countdown hidden"></div>
+  <div id="countdown" class="countdown hidden"><span id="countdown-number"></span></div>
 </section>
 
 <!-- VICTORY -->

@@ -24,13 +24,13 @@ const screenRace = document.getElementById('screen-race');
 const screenVictory = document.getElementById('screen-victory');
 const cellsLayer = document.getElementById('cells');
 const tokensLayer = document.getElementById('tokens');
-const legendEl = document.getElementById('legend');
 const timelineEl = document.getElementById('timeline');
 const deckCounterEl = document.getElementById('deck-counter');
 const deckStackEl = document.getElementById('deck-stack');
 const discardStackEl = document.getElementById('discard-stack');
 const currentCardEl = document.getElementById('current-card');
 const countdownEl = document.getElementById('countdown');
+const countdownNumberEl = document.getElementById('countdown-number');
 const confettiEl = document.getElementById('confetti');
 const victoryWinnerEl = document.getElementById('victory-winner');
 const victoryTitleEl = document.getElementById('victory-title');
@@ -290,25 +290,24 @@ function spawnConfetti() {
 async function countdown() {
   countdownEl.classList.remove('hidden');
   for (const txt of ['3', '2', '1', 'GO!']) {
-    countdownEl.textContent = txt;
-    countdownEl.classList.remove('pulse');
-    void countdownEl.offsetWidth;
-    countdownEl.classList.add('pulse');
+    countdownNumberEl.textContent = txt;
+    countdownNumberEl.classList.remove('pulse');
+    void countdownNumberEl.offsetWidth;
+    countdownNumberEl.classList.add('pulse');
     await sleep(txt === 'GO!' ? 750 : 650);
   }
   countdownEl.classList.add('hidden');
 }
 
-function setLegend() {
-  legendEl.innerHTML =
-    `<span>You: <b class="${SUIT_COLOR[playerSuit]}">${SUIT_SYMBOL[playerSuit]} ${SUIT_NAME[playerSuit]}</b></span>` +
-    `<span>Computer: <b class="${SUIT_COLOR[computerSuit]}">${SUIT_SYMBOL[computerSuit]} ${SUIT_NAME[computerSuit]}</b></span>`;
+function setRiderLabels() {
+  document.getElementById('you-label').style.left = (SUIT_COL[playerSuit] * COLW) + '%';
+  document.getElementById('pc-label').style.left = (SUIT_COL[computerSuit] * COLW) + '%';
 }
 
 async function startRace() {
   screenSelect.classList.add('hidden');
   screenRace.classList.remove('hidden');
-  setLegend();
+  setRiderLabels();
   buildCells();
   renderTokens();
   updateDeckCounter();

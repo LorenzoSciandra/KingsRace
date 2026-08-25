@@ -95,10 +95,6 @@ h1{
   display:flex; align-items:center; justify-content:space-between; flex:0 0 auto;
 }
 .mini-title{ font-size:1.3rem; white-space:nowrap; }
-.legend{ display:flex; gap:1.6em; font-size:.95rem; font-family:'Poppins',sans-serif; }
-.legend b{ font-family:'Cinzel',serif; }
-.legend b.red{ color:#ff8b7a; }
-.legend b.black{ color:var(--ink); }
 
 .pause-btn{
   font-family:'Poppins',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.03em;
@@ -118,7 +114,7 @@ h1{
 /* ---------- timeline (pinned to the left, below the title) ---------- */
 .timeline-panel{
   position:absolute; left:22px; top:74px; bottom:34px;
-  width:340px; height:230px; margin:auto 0;
+  width:340px; height:300px; margin:auto 0;
   display:flex; flex-direction:column; gap:8px;
 }
 .timeline-title{
@@ -254,8 +250,9 @@ h1{
 /* ---------- BOARD ---------- */
 .board-wrap{
   height:100%; flex:0 1 auto;
-  display:flex; align-items:stretch;
+  display:flex; align-items:flex-start;
   padding-right:96px; /* reserved for the START/FINISH rails outside the grid */
+  padding-bottom:38px; /* reserved for the YOU/PC rider labels below the grid */
 }
 #board{
   position:relative;
@@ -277,6 +274,12 @@ h1{
 }
 .rail-top{ top:0; height:12.5%; }
 .rail-bottom{ bottom:0; height:12.5%; }
+
+.rider-label{
+  position:absolute; top:100%; margin-top:12px; width:20%; text-align:center;
+  font-family:'Cinzel',serif; font-size:.85rem; font-weight:700; letter-spacing:.15em;
+  color:var(--gold-bright); opacity:.9; pointer-events:none; transition:left .65s cubic-bezier(.34,1.3,.4,1);
+}
 
 #cells{
   position:absolute; inset:8px;
@@ -330,11 +333,13 @@ h1{
 /* ---------- COUNTDOWN ---------- */
 .countdown{
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-  font-family:'Cinzel',serif; font-size:8rem; color:var(--gold-bright);
-  text-shadow:0 0 40px rgba(243,217,154,.7);
   background:rgba(0,0,0,.35); z-index:50; pointer-events:none;
 }
-.countdown.pulse{ animation:countPulse .65s ease; }
+#countdown-number{
+  font-family:'Cinzel',serif; font-size:8rem; color:var(--gold-bright);
+  text-shadow:0 0 40px rgba(243,217,154,.7);
+}
+#countdown-number.pulse{ animation:countPulse .65s ease; }
 @keyframes countPulse{
   from{ transform:scale(.4); opacity:0; }
   35%{ transform:scale(1.15); opacity:1; }
@@ -443,5 +448,5 @@ h1{
   .rail{ font-size:.62rem; margin-left:8px; }
   .deck-panel{ width:110px; }
   .flip-container{ width:78px; height:112px; }
-  .countdown{ font-size:5rem; }
+  #countdown-number{ font-size:5rem; }
 }
