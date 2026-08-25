@@ -25,9 +25,10 @@ const screenVictory = document.getElementById('screen-victory');
 const cellsLayer = document.getElementById('cells');
 const tokensLayer = document.getElementById('tokens');
 const legendEl = document.getElementById('legend');
-const statusEl = document.getElementById('status');
+const timelineEl = document.getElementById('timeline');
 const deckCounterEl = document.getElementById('deck-counter');
 const deckStackEl = document.getElementById('deck-stack');
+const discardStackEl = document.getElementById('discard-stack');
 const currentCardEl = document.getElementById('current-card');
 const countdownEl = document.getElementById('countdown');
 const confettiEl = document.getElementById('confetti');
@@ -42,23 +43,23 @@ async function sleep(ms) {
   await new Promise(r => setTimeout(r, ms));
   if (paused) await new Promise(res => { pauseResolve = res; });
 }
-function togglePause() {
-  if (gameOver) return;
-  paused = !paused;
-  pauseBtn.textContent = paused ? 'Resume' : 'Pause';
-  pauseBtn.classList.toggle('is-paused', paused);
-  if (paused) {
-    const ov = document.createElement('div');
-    ov.className = 'paused-overlay';
-    ov.id = 'paused-overlay';
-    ov.textContent = 'PAUSED';
-    screenRace.appendChild(ov);
-  } else {
-    document.getElementById('paused-overlay')?.remove();
-    if (pauseResolve) { pauseResolve(); pauseResolve = null; }
-  }
+function pauseGame() {
+  if (gameOver || paused) return;
+  paused = true;
+  const ov = document.createElement('div');
+  ov.className = 'paused-overlay';
+  ov.id = 'paused-overlay';
+  ov.innerHTML = `<div class="paused-box"><span class="paused-title">Paused</span><button class="pause-btn" id="resume-btn">▶ Resume</button></div>`;
+  screenRace.appendChild(ov);
+  document.getElementById('resume-btn').addEventListener('click', resumeGame);
 }
-pauseBtn.addEventListener('click', togglePause);
+function resumeGame() {
+  if (!paused) return;
+  paused = false;
+  document.getElementById('paused-overlay')?.remove();
+  if (pauseResolve) { pauseResolve(); pauseResolve = null; }
+}
+pauseBtn.addEventListener('click', pauseGame);
 
 // ---------- Game state ----------
 let mainDeck, bonusRow, kingPos, revealed, deckIdx;
@@ -79,19 +80,20 @@ function newGame() {
   deckIdx = 0;
   gameOver = false;
   paused = false;
-  pauseBtn.textContent = 'Pause';
-  pauseBtn.classList.remove('is-paused');
   pauseBtn.disabled = false;
+  timelineEl.innerHTML = '';
 }
 
 // ---------- Bicycle-style card markup ----------
-function cardInnerHTML(rank, sym, crown) {
+function cardInnerHTML(rank, sym, figureGlyph) {
+  const figure = figureGlyph ? `<span class="figure-glyph">${figureGlyph}</span>` : '';
+  const centerClass = figureGlyph ? 'pc-center has-figure' : 'pc-center';
   return `<span class="pc-corner tl">${rank}<br>${sym}</span>` +
-    `<div class="pc-center">${crown ? '<span class="crown">♛</span>' : ''}<span class="big-pip">${sym}</span></div>` +
+    `<div class="${centerClass}">${figure}<span class="big-pip">${sym}</span></div>` +
     `<span class="pc-corner br">${rank}<br>${sym}</span>`;
 }
-function jokerInnerHTML() {
-  return `<div class="pc-center"><span class="big-pip">🃏</span><span class="joker-label">JOKER</span></div>`;
+function jokerInnerHTML(color) {
+  return `<div class="pc-center"><span class="joker-badge ${color}"><span class="figure-glyph">🃏</span></span><span class="joker-label">JOKER</span></div>`;
 }
 
 // ---------- Board construction ----------
@@ -125,7 +127,7 @@ function renderTokens() {
     el.className = `token king pc-front ${SUIT_COLOR[suit]} enter`;
     if (suit === playerSuit) el.classList.add('player');
     if (suit === computerSuit) el.classList.add('computer');
-    el.innerHTML = cardInnerHTML('K', SUIT_SYMBOL[suit], true);
+    el.innerHTML = cardInnerHTML('K', SUIT_SYMBOL[suit], '♚');
     positionToken(el, kingPos[suit], SUIT_COL[suit]);
     el.style.animationDelay = (i * 120) + 'ms';
     tokensLayer.appendChild(el);
@@ -153,10 +155,10 @@ function revealBonusCard(row, card) {
   const front = el.querySelector('.pc-front');
   if (card.type === 'ace') {
     front.classList.add(SUIT_COLOR[card.suit]);
-    front.innerHTML = cardInnerHTML('A', SUIT_SYMBOL[card.suit], false);
+    front.innerHTML = cardInnerHTML('A', SUIT_SYMBOL[card.suit]);
   } else {
     front.classList.add(card.color);
-    front.innerHTML = jokerInnerHTML();
+    front.innerHTML = jokerInnerHTML(card.color);
   }
   el.classList.add('flipped');
 }
@@ -165,16 +167,28 @@ function showCurrentCard(card) {
   const flipper = currentCardEl.querySelector('.flipper');
   const front = currentCardEl.querySelector('.pc-front');
   front.className = `face pc-front ${SUIT_COLOR[card.suit]}`;
-  front.innerHTML = cardInnerHTML(card.rank, SUIT_SYMBOL[card.suit], false);
+  front.innerHTML = cardInnerHTML(card.rank, SUIT_SYMBOL[card.suit]);
   flipper.classList.add('flipped');
 }
 function hideCurrentCard() {
   currentCardEl.querySelector('.flipper').classList.remove('flipped');
 }
 
-function status(msg) { statusEl.textContent = msg; }
+function logEvent(msg) {
+  const li = document.createElement('li');
+  li.className = 'tl-entry';
+  li.textContent = msg;
+  timelineEl.prepend(li);
+  while (timelineEl.children.length > 40) timelineEl.lastChild.remove();
+}
 function updateDeckCounter() {
   deckCounterEl.textContent = `${mainDeck.length - deckIdx} cards left`;
+  const remFrac = (mainDeck.length - deckIdx) / mainDeck.length;
+  const playedFrac = deckIdx / mainDeck.length;
+  deckStackEl.style.setProperty('--th', (1 + remFrac * 5) + 'px');
+  deckStackEl.style.opacity = remFrac > 0 ? 1 : .3;
+  discardStackEl.style.setProperty('--th', (1 + playedFrac * 5) + 'px');
+  discardStackEl.style.opacity = playedFrac > 0 ? Math.min(1, .35 + playedFrac * .75) : 0;
 }
 
 // ---------- Game logic ----------
@@ -182,7 +196,7 @@ async function advanceKing(suit) {
   if (gameOver || kingPos[suit] === 0) return;
   const newRow = kingPos[suit] - 1;
   moveKing(suit, newRow);
-  status(`The ${SUIT_NAME[suit]} King advances!`);
+  logEvent(`${SUIT_SYMBOL[suit]} The ${SUIT_NAME[suit]} King advances!`);
   await sleep(680);
   if (newRow === 0) { await win(suit); return; }
   await checkCheckpoints();
@@ -195,15 +209,18 @@ async function checkCheckpoints() {
     if (SUITS.every(s => kingPos[s] < r)) {
       revealed.add(r);
       const card = bonusRow[r];
-      status(`All Kings have passed row ${r}: the bonus card is revealed!`);
       revealBonusCard(r, card);
+      logEvent(`🎯 All Kings passed row ${r} — the bonus card is revealed!`);
       await sleep(750);
       if (card.type === 'ace') {
-        status(`Ace of ${SUIT_NAME[card.suit]}! The ${SUIT_NAME[card.suit]} King advances.`);
+        logEvent(`${SUIT_SYMBOL[card.suit]} Ace of ${SUIT_NAME[card.suit]}!`);
+        await sleep(450);
         await advanceKing(card.suit);
       } else {
         const affected = SUITS.filter(s => SUIT_COLOR[s] === card.color);
-        status(`${card.color === 'red' ? 'Red' : 'Black'} Joker! The ${affected.map(s => SUIT_NAME[s]).join(' and ')} Kings fall back.`);
+        logEvent(`🃏 ${card.color === 'red' ? 'Red' : 'Black'} Joker!`);
+        await sleep(450);
+        logEvent(`The ${affected.map(s => SUIT_NAME[s]).join(' and ')} Kings fall back.`);
         affected.forEach(s => moveKing(s, Math.min(7, kingPos[s] + 1)));
         await sleep(680);
       }
@@ -214,16 +231,17 @@ async function checkCheckpoints() {
 async function gameLoop() {
   while (!gameOver && deckIdx < mainDeck.length) {
     hideCurrentCard();
-    await sleep(500);
+    await sleep(450);
     if (gameOver) break;
     const card = mainDeck[deckIdx++];
     updateDeckCounter();
     showCurrentCard(card);
-    status(`Card revealed: ${card.rank} of ${SUIT_NAME[card.suit]}`);
-    await sleep(700);
+    await sleep(600);
+    logEvent(`🂠 ${card.rank} of ${SUIT_NAME[card.suit]} turned`);
+    await sleep(650);
     if (gameOver) break;
     await advanceKing(card.suit);
-    await sleep(200);
+    await sleep(250);
   }
 }
 
@@ -231,13 +249,13 @@ async function win(suit) {
   gameOver = true;
   pauseBtn.disabled = true;
   kingEls[suit].classList.add('winner');
-  status(`The ${SUIT_NAME[suit]} King crosses the finish line!`);
+  logEvent(`🏆 The ${SUIT_NAME[suit]} King crosses the finish line!`);
   await sleep(1000);
   showVictory(suit);
 }
 
 function showVictory(suit) {
-  victoryWinnerEl.innerHTML = `<div class="pc-front ${SUIT_COLOR[suit]}">${cardInnerHTML('K', SUIT_SYMBOL[suit], true)}</div>`;
+  victoryWinnerEl.innerHTML = `<div class="pc-front ${SUIT_COLOR[suit]}">${cardInnerHTML('K', SUIT_SYMBOL[suit], '♚')}</div>`;
   if (suit === playerSuit) {
     victoryTitleEl.textContent = '🏆 You Win!';
     victorySubtitleEl.textContent = `Your ${SUIT_NAME[suit]} King crossed the finish line first.`;
@@ -292,12 +310,12 @@ async function startRace() {
   renderTokens();
   updateDeckCounter();
 
-  status('Shuffling the deck...');
+  logEvent('🂠 Shuffling the deck...');
   deckStackEl.classList.add('shuffling');
   await sleep(1400);
   deckStackEl.classList.remove('shuffling');
 
-  status('Riders, get ready...');
+  logEvent('🏇 Riders, get ready...');
   await sleep(500);
   await countdown();
   gameLoop();

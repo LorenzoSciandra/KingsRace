@@ -35,26 +35,39 @@
   </header>
 
   <div class="race-main">
+    <aside class="timeline-panel">
+      <span class="timeline-title">Race Log</span>
+      <ol id="timeline" class="timeline"></ol>
+    </aside>
+
     <aside class="deck-panel">
-      <div class="deck-stack" id="deck-stack"><i></i><i></i><i></i></div>
+      <div class="pile">
+        <div class="deck-stack" id="deck-stack"><i class="pc-back"></i><i class="pc-back"></i><i class="pc-back"></i></div>
+        <span class="pile-label">Deck</span>
+      </div>
       <div class="flip-container" id="current-card">
         <div class="flipper">
           <div class="face pc-back"></div>
           <div class="face pc-front"></div>
         </div>
       </div>
+      <div class="pile">
+        <div class="discard-stack" id="discard-stack"><i class="pc-back"></i><i class="pc-back"></i><i class="pc-back"></i></div>
+        <span class="pile-label">Discard</span>
+      </div>
       <div id="deck-counter" class="deck-counter">44 cards left</div>
     </aside>
 
-    <div id="board">
-      <span class="rail rail-top">FINISH</span>
-      <span class="rail rail-bottom">START</span>
-      <div id="cells"></div>
-      <div id="tokens"></div>
+    <div class="board-wrap">
+      <div id="board">
+        <span class="rail rail-top">FINISH</span>
+        <span class="rail rail-bottom">START</span>
+        <div id="cells"></div>
+        <div id="tokens"></div>
+      </div>
     </div>
   </div>
 
-  <p id="status" class="status"></p>
   <div id="countdown" class="countdown hidden"></div>
 </section>
 
